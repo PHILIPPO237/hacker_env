@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+
+# Config et données locales générées par HACKER_ENV
+.hacker_env/
+*.backup.*
+*.log
+
+# Éditeurs / IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Stockage Android / apps de fichiers (ne pas versionner les artefacts locaux)
+.trashed*

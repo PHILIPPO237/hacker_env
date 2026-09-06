@@ -926,14 +926,29 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
                 "MAIN MENU", f"v{self.VERSION}",
                 self.theme.get('PURPLE'), self.theme.get('PINK'), self.theme
             )
-            print_info("1) 🖥️  Dashboard", "📊")
-            print_info("2) 🎨 Complete Installation", "✨")
-            print_info("3) 🔧 Platform Setup", "⚙️")
-            print_info("4) 🔧 Repair Mode", "🛠️")
-            print_info("5) ⬆️  Update Mode", "📦")
-            print_info("6) 🎨 Change Theme", "🎨")
-            print_info("7) 🗑️  Uninstall", "💣")
-            print_info("8) 👋 Quit", "🚪")
+            dim = self.theme.colors['DIM']
+            rst = self.theme.colors['RST']
+
+            def item(line, icon, explication):
+                print_info(line, icon)
+                print(f"       {dim}→ {explication}{rst}")
+
+            item("1) 🖥️  Dashboard", "📊",
+                 "Juste un coup d'œil rapide : CPU, RAM, disque, infos système. Rien n'est modifié.")
+            item("2) 🎨 Complete Installation", "✨",
+                 "L'assistant complet : bannière, thème de couleurs, style de prompt, alias — tout en un.")
+            item("3) 🔧 Platform Setup", "⚙️",
+                 "Reconfigure uniquement les réglages propres à ta plateforme (Termux/WSL/Linux).")
+            item("4) 🔧 Repair Mode", "🛠️",
+                 "Régénère ta config shell si ton terminal affiche des erreurs au démarrage.")
+            item("5) ⬆️  Update Mode", "📦",
+                 "Vérifie et met à jour les modules déjà installés.")
+            item("6) 🎨 Change Theme", "🎨",
+                 "Change juste les couleurs de l'interface, sans repasser par tout l'assistant.")
+            item("7) 🗑️  Uninstall", "💣",
+                 "Retire HACKER_ENV et restaure tes anciens fichiers de config sauvegardés.")
+            item("8) 👋 Quit", "🚪",
+                 "Ferme le programme, aucune modification n'est faite.")
             print_end_neon(self.theme.get('PURPLE'), self.theme)
             
             choice = input(f"  {self.theme.get('CYAN')}➤  Your choice [1-8] : {self.theme.colors['RST']}").strip()
@@ -975,22 +990,105 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
                 input("Press Enter to continue...")
 
 
+def _print_aide_francaise(theme):
+    """Affiche une explication détaillée, en français, de chaque option."""
+    c1 = theme.get('primary', True)
+    c2 = theme.get('secondary', True) if hasattr(theme, 'get') else c1
+    rst = theme.colors['RST']
+    dim = theme.colors['DIM']
+
+    def titre(t):
+        print(f"\n  {c1}{t}{rst}")
+        print(f"  {dim}{'─' * len(t)}{rst}")
+
+    def option(flag, court, quoi, quand):
+        suffixe = f"{dim} (raccourci : {court}){rst}" if court else ""
+        print(f"\n  {theme.get('CYAN', True)}{flag}{rst}{suffixe}")
+        print(f"    • Ce que ça fait : {quoi}")
+        print(f"    • Quand l'utiliser : {quand}")
+
+    print(f"\n  {c1}╭──────────────────────────────────────────────╮{rst}")
+    print(f"  {c1}│{rst}   {theme.get('WHITE', True)}HACKER_ENV V2 — AIDE EN FRANÇAIS{rst}          {c1}│{rst}")
+    print(f"  {c1}╰──────────────────────────────────────────────╯{rst}")
+    print(f"\n  Toutes les commandes se lancent avec : {theme.get('CYAN')}python3 main.py <option>{rst}")
+    print(f"  Sans aucune option, l'assistant interactif complet démarre.")
+
+    titre("LES OPTIONS DISPONIBLES")
+
+    option(
+        "--dashboard", "-d",
+        "Affiche uniquement le tableau de bord (CPU, RAM, disque, infos système), sans lancer tout l'assistant.",
+        "Pour un simple coup d'œil rapide sur l'état de ton téléphone/PC."
+    )
+    option(
+        "--repair", "-r",
+        "Régénère ton fichier de config shell (.bashrc / .zshrc) à partir de tes choix déjà enregistrés.",
+        "Si ton terminal affiche des erreurs au démarrage ou si une config a été abîmée."
+    )
+    option(
+        "--update", "-u",
+        "Vérifie et met à jour les modules/paquets utilisés par HACKER_ENV.",
+        "De temps en temps, pour garder l'outil à jour."
+    )
+    option(
+        "--setup", "-s",
+        "Relance uniquement la configuration spécifique à ta plateforme (Termux, WSL, ou Linux).",
+        "Si tu changes d'appareil ou si la détection de plateforme a mal fonctionné."
+    )
+    option(
+        "--uninstall", "",
+        "Désinstalle HACKER_ENV et restaure tes anciens fichiers de config (sauvegardés automatiquement à l'installation).",
+        "Si tu veux tout retirer proprement."
+    )
+    option(
+        "--version", "-v",
+        "Affiche juste la version installée et la plateforme détectée.",
+        "Pour vérifier rapidement quelle version tu as."
+    )
+    option(
+        "--aide", "-a",
+        "Affiche ce message d'aide en français.",
+        "Quand tu ne te souviens plus d'une commande."
+    )
+
+    titre("EXEMPLES CONCRETS")
+    print(f"\n    {dim}# Voir juste le dashboard{rst}")
+    print(f"    {theme.get('CYAN')}python3 main.py --dashboard{rst}")
+    print(f"\n    {dim}# Réparer ma config apres une erreur{rst}")
+    print(f"    {theme.get('CYAN')}python3 main.py --repair{rst}")
+    print(f"\n    {dim}# Lancer l'assistant complet (bannières, thèmes, prompt...){rst}")
+    print(f"    {theme.get('CYAN')}python3 main.py{rst}")
+    print()
+
+
 def main():
     """Parse arguments and launch application."""
-    parser = argparse.ArgumentParser(description=f"HACKER_ENV V2 - Cross-Platform Terminal Environment")
-    parser.add_argument('--repair', '-r', action='store_true', help='Regenerate shell config')
-    parser.add_argument('--update', '-u', action='store_true', help='Update packages')
-    parser.add_argument('--uninstall', action='store_true', help='Uninstall')
-    parser.add_argument('--setup', '-s', action='store_true', help='Platform-specific setup')
-    parser.add_argument('--dashboard', '-d', action='store_true', help='Show dashboard')
-    parser.add_argument('--version', '-v', action='store_true', help='Show version')
-    
+    parser = argparse.ArgumentParser(
+        description="HACKER_ENV V2 - Environnement de terminal personnalisable (Termux/WSL/Linux)"
+    )
+    parser.add_argument('--repair', '-r', action='store_true',
+                         help="Regenere ta config shell (.bashrc/.zshrc)")
+    parser.add_argument('--update', '-u', action='store_true',
+                         help="Met a jour les modules installes")
+    parser.add_argument('--uninstall', action='store_true',
+                         help="Desinstalle HACKER_ENV et restaure tes anciennes configs")
+    parser.add_argument('--setup', '-s', action='store_true',
+                         help="Relance la configuration specifique a ta plateforme")
+    parser.add_argument('--dashboard', '-d', action='store_true',
+                         help="Affiche seulement le tableau de bord systeme")
+    parser.add_argument('--version', '-v', action='store_true',
+                         help="Affiche la version installee")
+    parser.add_argument('--aide', '-a', action='store_true',
+                         help="Affiche l'aide detaillee en francais pour chaque option")
+
     args = parser.parse_args()
-    
+
     app = HackerEnv()
-    
+
     try:
-        if args.version:
+        if args.aide:
+            _print_aide_francaise(app.theme)
+        elif args.version:
             print(f"HACKER_ENV V2 - Version {app.VERSION}")
             print(f"Platform: {app.platform_info.environment.upper()}")
             print(f"OS: {app.platform_info.os_name}")
