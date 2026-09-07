@@ -47,7 +47,7 @@ from modules.aliases import AliasManager
 
 # Import intro and effects
 from core.intro import show_splash, show_author_presentation, show_name_preview
-from core.bigfont import render_big_text, fits_width
+from core.bigfont import render_big_text, render_big_text_joined, fits_width
 from core.guide import Guide
 
 # Import themes
@@ -112,32 +112,32 @@ class HackerEnv:
         )
         
         # Display platform info
-        print_info(f"Platform: {self.platform_info.os_name}", "🖥️")
-        print_info(f"Environment: {self.platform_info.environment.upper()}", "🌐")
-        print_info(f"Shell: {self.platform_info.shell}", "💻")
-        print_info(f"Architecture: {self.platform_info.architecture}", "⚙️")
+        print_info(f"Plateforme : {self.platform_info.os_name}", "🖥️")
+        print_info(f"Environnement : {self.platform_info.environment.upper()}", "🌐")
+        print_info(f"Shell : {self.platform_info.shell}", "💻")
+        print_info(f"Architecture : {self.platform_info.architecture}", "⚙️")
         
         # Check space
         ok, avail_mb = check_space(500)
         if ok:
-            print_success(f"{avail_mb} MB available - OK")
+            print_success(f"{avail_mb} Mo disponibles - OK")
         else:
-            print_error(f"Insufficient space: {avail_mb} MB / 500 MB required")
+            print_error(f"Espace insuffisant : {avail_mb} Mo / 500 Mo requis")
             sys.exit(1)
         
         # Check internet
         if check_internet():
-            print_success("Internet connection - OK")
-            print_info("Required for OhMyZsh, plugins and weather", "💡")
+            print_success("Connexion internet - OK")
+            print_info("Utile pour OhMyZsh, les plugins et la météo", "💡")
         else:
-            print_warn("No connection - some features unavailable")
+            print_warn("Pas de connexion - certaines fonctions indisponibles")
         
         # Install dependencies
         failed = check_and_install_deps()
         if failed:
-            print_warn(f"Dependencies not installed: {', '.join(failed)}")
+            print_warn(f"Dépendances non installées : {', '.join(failed)}")
         else:
-            print_success("All dependencies OK")
+            print_success("Toutes les dépendances sont OK")
         
         print_end_neon(self.theme.get('ORANGE'), self.theme)
     
@@ -151,29 +151,29 @@ class HackerEnv:
             self.theme.get('CYAN'), self.theme.get('GREEN'),
             self.theme
         )
-        print_info("This name will be displayed in the banner and ASCII art", "👤")
-        print_info("Keep it short (8-15 characters) for optimal rendering", "💡")
+        print_info("Ce nom sera affiché dans la bannière et l'art ASCII", "👤")
+        print_info("Garde-le court (8-15 caractères) pour un rendu optimal", "💡")
         print_end_neon(self.theme.get('CYAN'), self.theme)
         
         default_name = self.user_name or "HACKER_ENV"
         self.user_name = self.guide.ask(
             "Name", default=default_name,
-            help_text="This name appears in your terminal banner. Keep it short (8-15 characters)."
+            help_text="Ce nom apparaît dans ta bannière de terminal. Garde-le court (8-15 caractères)."
         )
         self.guide.remember("Name", self.user_name)
         
         show_name_preview(self.theme, self.user_name)
-        pulse_text(f"  ✦ Configuration saved: {self.user_name}", 57, 255, 20, self.theme)
+        pulse_text(f"  ✦ Configuration enregistrée : {self.user_name}", 57, 255, 20, self.theme)
         
         # Ask about using name as big art
         if fits_width(self.user_name, 60):
             self.use_name_as_big_art = self.guide.ask_yes_no(
                 f"Display '{self.user_name}' in LARGE letters (instead of fixed art)?",
                 default="o",
-                help_text="By default, the decorative ASCII art is fixed. If yes, YOUR name will be displayed in large block letters."
+                help_text="Par défaut, l'art ASCII décoratif est fixe. Si oui, TON nom sera affiché en grandes lettres bloc."
             )
         else:
-            print_warn(f"'{self.user_name}' is too long for large letters on mobile")
+            print_warn(f"'{self.user_name}' est trop long pour les grandes lettres sur mobile")
             self.use_name_as_big_art = False
     
     def stage_banners(self):
@@ -189,10 +189,10 @@ class HackerEnv:
             self.theme.get('PINK'), self.theme.get('PURPLE'),
             self.theme
         )
-        print_info(f"{total} models available — browse freely, in any order", "🎨")
-        print_info("Type a number to preview it in full (frame, colors, info)", "🔎")
-        print_info("Type 'l' to relist, 's' to select the last one you saw", "💡")
-        print_info("Press Enter to keep your current choice", "⏎")
+        print_info(f"{total} modèles disponibles — navigue librement, dans l'ordre que tu veux", "🎨")
+        print_info("Tape un numéro pour le prévisualiser en entier (cadre, couleurs, infos)", "🔎")
+        print_info("Tape 'l' pour relister, 's' pour choisir le dernier vu", "💡")
+        print_info("Appuie sur Entrée pour garder ton choix actuel", "⏎")
         print_end_neon(self.theme.get('PINK'), self.theme)
 
         def _print_index():
@@ -247,8 +247,8 @@ class HackerEnv:
             self.theme.get('PURPLE'), self.theme.get('PINK'),
             self.theme
         )
-        print_info("The line that appears before each command", "⌨️")
-        print_info("Each style has a real preview below", "👇")
+        print_info("La ligne qui apparaît avant chaque commande", "⌨️")
+        print_info("Chaque style a un vrai aperçu ci-dessous", "👇")
         print_end_neon(self.theme.get('PURPLE'), self.theme)
         
         # Show previews
@@ -256,7 +256,7 @@ class HackerEnv:
         
         self.prompt_style = self.guide.ask(
             "Your choice [1-7]", default=self.prompt_style,
-            help_text="1=Hacker Neon, 2=Pro Developer, 3=Minimalist, 4=Cyberpunk, 5=Steampunk, 6=Anime, 7=Powerline.",
+            help_text="1=Hacker Neon, 2=Développeur Pro, 3=Minimaliste, 4=Cyberpunk, 5=Steampunk, 6=Anime, 7=Powerline.",
             choices=[str(i) for i in range(1, len(PromptGallery.STYLES) + 1)],
         )
         self.guide.remember("Prompt", PromptGallery.get(self.prompt_style).name)
@@ -268,7 +268,7 @@ class HackerEnv:
         self.use_custom_name_in_prompt = self.guide.ask_yes_no(
             f"Display '{self.user_name}' in prompt instead of system name?",
             default="o",
-            help_text=f"By default, prompt shows your system username. If yes, it will show '{self.user_name}' instead."
+            help_text=f"Par défaut, le prompt affiche ton nom d'utilisateur système. Si oui, il affichera '{self.user_name}' à la place."
         )
     
     def stage_modules(self):
@@ -281,7 +281,7 @@ class HackerEnv:
             self.theme.get('YELLOW'), self.theme.get('ORANGE'),
             self.theme
         )
-        print_info("Reply O (or Enter) for yes, n for no", "🎮")
+        print_info("Réponds O (ou Entrée) pour oui, n pour non", "🎮")
         print_end_neon(self.theme.get('YELLOW'), self.theme)
         
         manager = AliasManager()
@@ -337,7 +337,7 @@ class HackerEnv:
             self.theme.get('GREEN'), self.theme.get('CYAN'),
             self.theme
         )
-        print_info("Select a theme for the entire interface", "🎨")
+        print_info("Choisis un thème pour toute l'interface", "🎨")
         print_end_neon(self.theme.get('GREEN'), self.theme)
         
         # List available themes
@@ -372,9 +372,12 @@ class HackerEnv:
             self.theme.get('GREEN'), self.theme.get('CYAN'),
             self.theme
         )
-        print_info(f"Banner: {model.name} (frame {model.frame_style})", "🎨")
-        print_info(f"Prompt: {prompt.name}", "⌨️")
-        print_info(f"Theme: {self.theme_name}", "🖌️")
+        if getattr(self, 'use_name_as_big_art', False):
+            print_info(f"Bannière : ton nom '{self.user_name}' en grandes lettres (cadre {model.frame_style})", "🎨")
+        else:
+            print_info(f"Bannière : {model.name} (cadre {model.frame_style})", "🎨")
+        print_info(f"Prompt : {prompt.name}", "⌨️")
+        print_info(f"Thème : {self.theme_name}", "🖌️")
         
         manager = AliasManager(self.active_modules)
         for mod_name in manager.list_modules():
@@ -494,8 +497,12 @@ Y="$(_rgb {c2[0]} {c2[1]} {c2[2]})"
 C="$(_rgb {c3[0]} {c3[1]} {c3[2]})"
 """
         
-        # Banner
-        art_source = BannerGallery.get(self.model_choice).art
+        # Banner — si l'utilisateur a choisi d'afficher SON nom en grandes
+        # lettres, on remplace l'art fixe du modèle par le rendu de son nom.
+        if getattr(self, 'use_name_as_big_art', False):
+            art_source = render_big_text_joined(self.user_name)
+        else:
+            art_source = BannerGallery.get(self.model_choice).art
         art_escaped = art_source.replace('\\', '\\\\').replace('"', '\\"').replace('$', '\\$').replace('`', '\\`')
         
         banner = f"""
@@ -594,7 +601,7 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
         """Install OhMyZsh if not present."""
         # Only install for zsh
         if self.platform_info.shell != 'zsh':
-            print_info("Skipping OhMyZsh - not using zsh", "ℹ️")
+            print_info("OhMyZsh ignoré - zsh non utilisé", "ℹ️")
             return
         
         print_title_neon("Oh My Zsh", "Installation",
@@ -612,7 +619,7 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
                 print_end_neon(self.theme.get('PURPLE'), self.theme)
                 return
             
-            print_info("Installing...", "⬇️")
+            print_info("Installation en cours...", "⬇️")
             success, _, _ = run_cmd(
                 'RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"',
                 timeout=120
@@ -634,7 +641,7 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
             if os.path.exists(plugin_path):
                 print_success(f"Plugin {plugin} already installed")
             else:
-                print_info(f"Installing {plugin}...", "⬇️")
+                print_info(f"Installation de {plugin}...", "⬇️")
                 success, _, _ = run_cmd(["git", "clone", "--depth=1", url, plugin_path], timeout=60)
                 if success:
                     print_success(f"Plugin {plugin} installed")
@@ -688,7 +695,7 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
                     f.write(zsh_launch)
                 print_success(".bashrc created with auto-launch Zsh")
         else:
-            print_info(f"Using {self.platform_info.shell} shell", "ℹ️")
+            print_info(f"Utilisation du shell {self.platform_info.shell}", "ℹ️")
     
     def _final_report(self):
         """Display final report."""
@@ -707,14 +714,14 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
         model = BannerGallery.get(self.model_choice)
         prompt = PromptGallery.get(self.prompt_style)
         
-        print_info(f"Banner: {model.name} (frame {model.frame_style})", "🎨")
-        print_info(f"Prompt: {prompt.name}", "⌨️")
-        print_info(f"Theme: {self.theme_name}", "🖌️")
+        print_info(f"Bannière : {model.name} (cadre {model.frame_style})", "🎨")
+        print_info(f"Prompt : {prompt.name}", "⌨️")
+        print_info(f"Thème : {self.theme_name}", "🖌️")
         
         for mod in self.active_modules:
             print_info(f"{mod:10} : ✅ ON", self._get_module_icon(mod))
         
-        print_info(f"Config: {self.config.get_config_dir()}", "⚙️")
+        print_info(f"Config : {self.config.get_config_dir()}", "⚙️")
         print_end_neon(self.theme.get('GREEN'), self.theme)
         
         confetti_rain(duration=1.2, theme=self.theme)
@@ -740,10 +747,10 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
         scanline("═", self.theme.get('PURPLE'), self.theme)
         print_title_neon("FINAL MENU", "What do you want to do?",
                         self.theme.get('PURPLE'), self.theme.get('PINK'), self.theme)
-        print_info("1) Launch shell (recommended)", "🚀")
-        print_info("2) View aliases", "📜")
-        print_info("3) View generated config", "📄")
-        print_info("4) Quit", "👋")
+        print_info("1) Lancer le shell (recommandé)", "🚀")
+        print_info("2) Voir les alias", "📜")
+        print_info("3) Voir la config générée", "📄")
+        print_info("4) Quitter", "👋")
         print_end_neon(self.theme.get('PURPLE'), self.theme)
         
         choice = input(f"  {self.theme.get('CYAN')}➤  Choice [1-4] [1] : {self.theme.colors['RST']}")
@@ -801,7 +808,7 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
         print_title_neon("UPDATE MODE", "Packages, OhMyZsh, Plugins",
                         self.theme.get('BLUE'), self.theme.get('CYAN'), self.theme)
         
-        print_info("Updating packages...", "📦")
+        print_info("Mise à jour des paquets...", "📦")
         
         manager = get_platform_manager()
         manager.update_packages()
@@ -812,14 +819,14 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
         # OhMyZsh
         omz_path = os.path.expanduser('~/.oh-my-zsh')
         if os.path.exists(omz_path):
-            print_info("Updating Oh My Zsh...", "⬆️")
+            print_info("Mise à jour de Oh My Zsh...", "⬆️")
             run_cmd(["git", "-C", omz_path, "pull"], timeout=60)
         
         # Plugins
         for plugin in ['zsh-autosuggestions', 'zsh-syntax-highlighting']:
             pdir = os.path.expanduser(f"~/.oh-my-zsh/custom/plugins/{plugin}")
             if os.path.exists(pdir):
-                print_info(f"Updating {plugin}...", "⬆️")
+                print_info(f"Mise à jour de {plugin}...", "⬆️")
                 run_cmd(["git", "-C", pdir, "pull"], timeout=60)
         
         # Regenerate config
@@ -859,9 +866,9 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
                 print_success("Configuration removed")
             
             print_success("Files removed")
-            print_info("To reinstall: run the script again", "🔄")
+            print_info("Pour réinstaller : relance le script", "🔄")
         else:
-            print_info("Uninstall cancelled.", "🚫")
+            print_info("Désinstallation annulée.", "🚫")
         
         print_end_neon(self.theme.get('RED'), self.theme)
     
@@ -872,7 +879,7 @@ echo -e "\033[38;2;57;255;20m✦ \033[0m\033[38;2;0;255;255mHACKER_ENV V2 loaded
             setup = TermuxSetup(theme=self.theme, log_dir=self.config.get_log_dir())
             setup.run()
         else:
-            print_info("Platform-specific setup not required for this environment.", "ℹ️")
+            print_info("Aucune configuration spécifique requise pour cet environnement.", "ℹ️")
     
     # ═══════════════════════════════════════════════════════════════════════
     #  UTILITIES
