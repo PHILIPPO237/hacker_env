@@ -458,7 +458,7 @@ class HackerEnv:
             self.backup.backup_shell_configs('before_generate')
         
         # Generate config content
-        safe_user_name = shlex.quote(self.user_name).strip("'")
+        safe_user_name = self.user_name.replace('\\', '\\\\').replace('"', '\\"').replace('$', '\\$').replace('`', '\\`')
         
         # Header
         header = f"""# <HACKER_ENV_V2>

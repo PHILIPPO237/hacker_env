@@ -166,7 +166,7 @@ matrix_boot() {
         'clock': r"""
 # -- HORLOGE LIVE ---------------------------------------------------
 autoload -Uz add-zsh-hook
-_update_title() { print -Pn "\e]0;%* -- %~\a" }
+_update_title() { print -Pn "\e]0;%* -- %~\a"; }
 add-zsh-hook precmd _update_title
 """,
     }
