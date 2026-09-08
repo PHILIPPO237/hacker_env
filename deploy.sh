@@ -10,16 +10,14 @@
 set -e
 
 SOURCE="/storage/emulated/0/MT2/FREE-SURF/hacker_env"
-DEST="$HOME/hacker_env"
+DEST="$(cd "$(dirname "$0")" && pwd)"
 MSG="${1:-Mise a jour}"
 
 if [ -d "$SOURCE" ] && [ "$SOURCE" != "$DEST" ]; then
     echo "→ Stockage partage Android detecte, synchronisation..."
-    mkdir -p "$DEST"
     cp -rf "$SOURCE"/. "$DEST"/
 else
-    echo "→ Pas de stockage partage Android (PC) — utilisation directe de $DEST"
-    mkdir -p "$DEST"
+    echo "→ Utilisation directe du dossier : $DEST"
 fi
 
 cd "$DEST"
@@ -44,6 +42,19 @@ if git diff --cached --quiet; then
     echo "  (rien de nouveau a committer)"
 else
     git commit -m "$MSG"
+fi
+
+echo "→ Recuperation des changements distants (si il y en a)..."
+git fetch origin main 2>/dev/null || true
+if git rev-parse --verify -q origin/main > /dev/null; then
+    if ! git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
+        echo "  Le depot distant a des changements que tu n'as pas ici, fusion..."
+        if ! git pull origin main --allow-unrelated-histories --no-edit; then
+            echo "✗ Conflit lors de la fusion. Regarde 'git status', resous les fichiers en"
+            echo "  conflit a la main, puis relance : git add . && git commit && bash deploy.sh"
+            exit 1
+        fi
+    fi
 fi
 
 echo "→ Envoi vers GitHub..."

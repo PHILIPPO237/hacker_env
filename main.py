@@ -76,6 +76,8 @@ class HackerEnv:
         self.model_choice = self.config.get('banner_model', '1')
         self.prompt_style = self.config.get('prompt_style', '1')
         self.active_modules = self.config.get('modules', ['tmux', 'backup', 'weather', 'genpass', 'python'])
+        self.use_name_as_big_art = self.config.get('use_name_as_big_art', False)
+        self.use_custom_name_in_prompt = self.config.get('use_custom_name_in_prompt', False)
         
         # Initialize theme
         self.theme = NeonTheme(self.theme_name)
@@ -431,6 +433,8 @@ class HackerEnv:
             'banner_model': self.model_choice,
             'prompt_style': self.prompt_style,
             'modules': self.active_modules,
+            'use_name_as_big_art': getattr(self, 'use_name_as_big_art', False),
+            'use_custom_name_in_prompt': getattr(self, 'use_custom_name_in_prompt', False),
         })
         self.config.save()
         
